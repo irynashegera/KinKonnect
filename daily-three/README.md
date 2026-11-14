@@ -1,22 +1,27 @@
 # Daily Three — Cal Poly
 
-Mobile-friendly, buildless first prototype. Run `python3 -m http.server 4173 --directory dist` from this directory.
+Responsive black-and-white website connected to Supabase project `ykuwpfxzqqjuzihuoptb`.
 
-## Implemented
+## Run locally
 
-- Cal Poly email domain validation and short onboarding.
-- Three rotating daily questions, one at a time, with two animated choices.
-- Browser-local persistence, Pacific-time daily question selection, and completion tracking.
-- Yesterday’s reveal with explicitly labeled illustrative campus percentages.
-- Three fictional sample matches, pending reveal requests, and an explicitly labeled control to preview mutual acceptance.
-- Animated profile reveal, optional social fields, explicit email sharing preference.
-- Share preview, native sharing or clipboard fallback; optional inclusion of answers.
-- Mobile layout, keyboard interaction, reduced-motion support, escaped profile text.
+`python3 -m http.server 4173 --directory dist`
 
-## Important boundaries
+## Live setup
 
-This is a front-end prototype. It does not verify email ownership, send messages, persist to a shared database, or match real students. Local data is not an authentication boundary. Sample contact details are not fabricated or linked to real accounts.
+1. Apply the initial `profiles`, `questions`, `answers` schema and policies supplied in chat.
+2. Run `supabase/02-live-results.sql` once in Supabase SQL Editor. It adds read-only aggregate/matching functions and schedules ten days of questions, preserving existing questions and answers.
+3. Add the deployed website origin to Authentication → URL Configuration. Local auth testing also needs the localhost URL allowed.
+4. Supabase's default email sender only delivers to authorized organization team addresses and has a small rate limit. Configure custom SMTP before inviting ordinary students.
+5. Enter a verified team member's Cal Poly address on the website and follow the sign-in link. Fill out a real profile and answer today's questions.
 
-Before real student use: connect email magic-link authentication restricted to verified `calpoly.edu` identities, shared question/answer storage with one vote per question and student, final daily aggregates, similarity over co-answered questions, server-enforced mutual consent, and profile visibility rules. Seed fictional data only in explicitly labeled demonstration mode. Add moderation and account controls in a secondary menu.
+## What is real
 
-The question bank is curated sample content, not scraped campus posts. Fonts load from Google Fonts, with system fallbacks.
+Email magic-link authentication, persisted profiles, one immutable vote per question/student, daily question dates in Pacific time, yesterday's vote counts, top-three similarity over co-answered questions, and match profiles. No sample students, percentages, or answer history are seeded. An empty database produces honest empty states.
+
+Matching requires today's three answers and at least three co-answered questions with another student. Profiles explicitly agree to sharing. Raw individual answer rows remain restricted to their owner. The public publishable key is safe to ship; never add a service-role/secret key or database password to website files.
+
+The website uses the official Supabase JS 2.119.0 UMD bundle in `dist/vendor/`. Its bundled license notices are retained. Questions are scheduled for ten days by the SQL update; schedule more dates before those run out. There is no automatic question generation.
+
+## Testing boundaries
+
+Email delivery and signed-in data paths need real account testing. No end-to-end email verification is claimed until a student has completed the real link flow. The Sites deployment is owner-private until access is explicitly changed; sharing with teammates requires a hosting access change or another public deployment.
