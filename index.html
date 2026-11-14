@@ -1,23 +1,507 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Commons is Cal Poly's daily question—a small ritual for bigger connections.">
-  <title>Commons — Cal Poly's daily question</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kinnect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #121212;
+    --cream: #F6F3EC;
+    --peach: #FFC8A8;
+    --lavender: #CDB8FF;
+    --line: #E2DDD2;
+    --muted: #555555;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--cream); }
+  body { font-family: Inter, system-ui, sans-serif; color: var(--ink); display: flex; justify-content: center; }
+  h1, h2, .display { font-family: 'Bricolage Grotesque', Inter, sans-serif; }
+  button { font-family: inherit; cursor: pointer; color: var(--ink); }
+
+  .app { width: 100%; max-width: 430px; min-height: 100dvh; height: 100dvh; display: flex; flex-direction: column; padding: 32px 24px; background: var(--cream); }
+  .screen { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .between { justify-content: space-between; }
+  .row { display: flex; justify-content: space-between; align-items: center; }
+  .label { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; }
+  .muted { color: var(--muted); }
+  .spacer { flex: 1; }
+
+  .btn { height: 56px; border: 2.5px solid var(--ink); border-radius: 16px; font-size: 17px; font-weight: 600; transition: transform 90ms ease, box-shadow 90ms ease; }
+  .btn:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink) !important; }
+  .btn-primary { background: var(--ink); color: #fff; box-shadow: 4px 4px 0 var(--peach); }
+  .btn-secondary { background: #fff; height: 44px; font-size: 15px; box-shadow: 3px 3px 0 var(--ink); }
+  .btn-primary:disabled { background: #8A8A8A; cursor: not-allowed; }
+  .btn-row { display: flex; gap: 8px; }
+  .btn-row > * { flex: 1; }
+  .stack-8 { display: flex; flex-direction: column; gap: 8px; }
+  .icon-btn { width: 44px; height: 44px; border: 0; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; }
+
+  .pill { align-self: flex-start; border: 2.5px solid var(--ink); border-radius: 999px; background: #fff; padding: 6px 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; }
+  .pill-sm { border-width: 2px; padding: 3px 9px; font-size: 11px; }
+  .badge { display: flex; align-items: center; gap: 6px; border: 2.5px solid var(--ink); border-radius: 999px; background: var(--peach); padding: 6px 12px; font-size: 14px; font-weight: 700; box-shadow: 2px 2px 0 var(--ink); }
+  .card { border: 2.5px solid var(--ink); border-radius: 18px; background: #fff; box-shadow: 4px 4px 0 var(--ink); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+  .card-tag { align-self: flex-start; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; }
+
+  /* Landing */
+  .brand { font-size: 20px; font-weight: 700; letter-spacing: 0.12em; }
+  .hero { margin: 0; font-size: 48px; line-height: 1.02; font-weight: 800; letter-spacing: -0.03em; }
+  .hl { background: var(--peach); padding: 0 10px; border-radius: 12px; }
+
+  /* Question */
+  .segs { display: flex; gap: 6px; }
+  .seg { flex: 1; height: 8px; border-radius: 999px; background: var(--line); }
+  .seg.done { background: var(--ink); }
+  .question { flex: 1; margin: 0; display: flex; align-items: center; font-size: 40px; line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; }
+  .answer { height: 96px; border: 3px solid var(--ink); border-radius: 24px; font-size: 24px; font-weight: 800; box-shadow: 5px 5px 0 var(--ink); }
+  .answer-a { background: var(--peach); }
+  .answer-b { background: var(--lavender); }
+
+  /* Results */
+  .scroll { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; margin: 0 -24px; padding: 0 24px 6px; }
+  .result { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+  .result-q { font-size: 17px; font-weight: 600; line-height: 1.25; }
+  .bar { display: flex; height: 44px; border: 2.5px solid var(--ink); border-radius: 14px; overflow: hidden; box-shadow: 3px 3px 0 var(--ink); }
+  .bar > div { min-width: 0; display: flex; align-items: center; padding: 0 12px; font-weight: 800; font-size: 18px; }
+  .bar .a { background: var(--peach); border-right: 2.5px solid var(--ink); }
+  .bar .b { background: var(--lavender); justify-content: flex-end; }
+  .bar-labels { display: flex; justify-content: space-between; font-size: 14px; }
+  .countdown { font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+  /* Share */
+  .share-card { width: 300px; border: 3px solid var(--ink); border-radius: 28px; background: var(--peach); box-shadow: 6px 6px 0 var(--ink); padding: 28px 24px; display: flex; flex-direction: column; gap: 22px; }
+  .squares { display: flex; gap: 8px; }
+  .square { width: 64px; height: 64px; border: 3px solid var(--ink); border-radius: 16px; background: #fff; }
+  .square.with { background: var(--ink); }
+
+  /* Opt-in */
+  .step { display: flex; gap: 14px; }
+  .step-num { font-size: 14px; font-weight: 800; width: 30px; height: 30px; border-radius: 999px; background: var(--peach); border: 2px solid var(--ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 16px; line-height: 1.4; }
+
+  /* Match */
+  .big-pct { align-self: flex-start; font-size: 112px; font-weight: 800; line-height: 1; letter-spacing: -0.05em; background: var(--peach); border: 3px solid var(--ink); border-radius: 28px; padding: 6px 18px 10px; box-shadow: 6px 6px 0 var(--ink); }
+  .stat { display: flex; justify-content: space-between; font-size: 16px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+
+  /* Contact */
+  .opt { display: flex; flex-direction: column; border: 2.5px solid var(--ink); border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 3px 3px 0 var(--ink); }
+  .opt-toggle { height: 52px; border: 0; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-size: 16px; font-weight: 600; }
+  .opt.on .opt-toggle { background: var(--peach); }
+  .opt label { display: flex; flex-direction: column; gap: 4px; padding: 10px 16px 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; }
+  .opt input { height: 40px; border: 0; border-bottom: 2px solid var(--ink); font-family: inherit; font-size: 16px; padding: 0; outline: none; background: #fff; color: var(--ink); }
+  .contact-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--ink); padding: 6px 0; }
+
+  /* Answer animation */
+  @keyframes shake { 0%,100%{transform:translateX(0)} 15%{transform:translateX(-10px) rotate(-1deg)} 30%{transform:translateX(9px) rotate(1deg)} 45%{transform:translateX(-7px)} 60%{transform:translateX(5px)} 75%{transform:translateX(-3px)} }
+  @keyframes pop { 0%{transform:scale(1)} 35%{transform:scale(1.07)} 60%{transform:scale(0.97)} 100%{transform:scale(1)} }
+  .shake { animation: shake 420ms ease-out; }
+  .pop { animation: pop 380ms ease-out; }
+  .fade { opacity: 0.25; transition: opacity 200ms ease; }
+  @media (prefers-reduced-motion: reduce) { .shake, .pop { animation: none; } }
+</style>
 </head>
 <body>
-  <nav><a class="brand" href="#top"><span>✦</span> commons</a><a class="nav-link" href="#how">How it works</a><button class="join small" data-join>Join the early list <span>→</span></button></nav>
-  <main id="top">
-    <section class="hero"><div class="eyebrow">A small campus ritual</div><h1>Meet people<br><em>beyond class.</em></h1><p class="intro">One thoughtful question every day. One easy way to discover the people who see the world a little like you do.</p><button class="join" data-join>Be first on Commons <span>→</span></button><p class="micro">Made for Cal Poly students · coming soon</p><div class="orbit orbit-a">music taste</div><div class="orbit orbit-b">late-night energy</div><div class="orbit orbit-c">weekend plans</div></section>
-    <section class="question-wrap" aria-labelledby="today"><div class="date">TODAY'S QUESTION · OCT 14</div><div class="question-card"><div><span class="tiny">THE COMMONS</span><h2 id="today">Plan ahead or<br>be spontaneous?</h2></div><div class="choices"><button class="choice" data-choice="Planner">Plan ahead <b>↗</b></button><button class="choice" data-choice="Spontaneous">Be spontaneous <b>↗</b></button></div><div class="vote-note" id="vote-note">Answer to unlock the campus pulse.</div></div></section>
-    <section id="how" class="how"><div class="section-label">THE IDEA</div><h2>A big campus can still feel<br><em>surprisingly small.</em></h2><p>Commons gives every Mustang the same easy prompt. It takes a few seconds to answer—and can turn into your next conversation, study buddy, or friend beyond your usual circle.</p><div class="steps"><article><span>01</span><h3>Answer</h3><p>Start your day with a simple two-choice question.</p></article><article><span>02</span><h3>See the pulse</h3><p>Find out how campus voted, in real time.</p></article><article><span>03</span><h3>Find your people</h3><p>Meet students with your shared interests and instincts.</p></article></div></section>
-    <section class="profiles"><div><div class="section-label">NOT JUST A MATCH</div><h2>Little things<br>add up.</h2><p>Your Commons profile keeps it human: major, year, a few optional links, and the questions you have in common.</p><button class="text-button" data-join>Make a profile <span>→</span></button></div><div class="profile-stack"><div class="profile back"><div class="avatar yellow">A</div><div><b>Alex, '27</b><small>Architecture</small></div><span>✦ 82%</span></div><div class="profile front"><div class="avatar blue">M</div><div><b>Maya, '26</b><small>Psychology</small></div><span>✦ 94%</span><p>“Both chose spontaneous—and both are looking for a hiking buddy.”</p></div></div></section>
-    <section class="cta"><div class="eyebrow">STARTING AT CAL POLY</div><h2>Find the people<br>in your <em>commons.</em></h2><button class="join light" data-join>Get early access <span>→</span></button><p class="micro">No pressure. Just a question a day.</p></section>
-  </main>
-  <footer><a class="brand" href="#top"><span>✦</span> commons</a><p>A daily ritual for Cal Poly.</p><p>© 2026</p></footer>
-  <dialog id="join-dialog"><button class="close" aria-label="Close">×</button><div class="eyebrow">EARLY ACCESS</div><h2>See you in the commons.</h2><p>We’ll let you know when the first question drops.</p><form id="signup"><label for="email">Cal Poly email</label><div><input id="email" type="email" placeholder="you@calpoly.edu" required><button>Count me in →</button></div><small id="form-message"></small></form></dialog>
-  <script src="app.js"></script>
-</body></html>
+<main class="app" id="app" aria-live="polite"></main>
+
+<script>
+/* ------------------------------------------------------------------
+   Kinnect — daily campus poll prototype
+   Everything below is demo data. In the real app, questions,
+   percentages, streaks and other students come from the backend.
+------------------------------------------------------------------- */
+
+const QUESTIONS = [
+  { tag: 'CONNECTION', text: 'Do you feel lonelier on campus than you let people see?', a: 'Yes', b: 'No', pa: 58 },
+  { tag: 'CAREER', text: 'High-paying job you hate, or low-paying job you love?', a: 'High pay', b: 'Love it', pa: 34 },
+  { tag: 'VALUES', text: 'Can you stay close friends with someone whose views you strongly disagree with?', a: 'Yes', b: 'No', pa: 51 }
+];
+
+const STREAK = 4;
+
+// 20 past questions: pa = % of campus who picked "a"
+const PAST_PA = [62, 35, 48, 71, 22, 55, 80, 41, 30, 66, 52, 18, 74, 45, 58, 27, 69, 38, 50, 84];
+const MY_PAST = 'abbaababbaabbabaabab';
+
+const flip = (str, idxs) => str.split('').map((c, i) => (idxs.includes(i) ? (c === 'a' ? 'b' : 'a') : c)).join('');
+
+const PEOPLE = [
+  { name: 'Jordan R.', first: 'Jordan', major: 'Business Admin · 2nd year', past: flip(MY_PAST, [4, 13]), today: 'aaa',
+    contacts: [{ label: 'School email', value: 'jordan.r@school.edu' }, { label: 'Instagram', value: '@jordanruns' }] },
+  { name: 'Priya S.', first: 'Priya', major: 'Mechanical Engineering · 3rd year', past: flip(MY_PAST, [0, 3, 7, 9, 15, 18]), today: 'bab',
+    contacts: [{ label: 'School email', value: 'priya.s@school.edu' }, { label: 'Instagram', value: '@priyabuilds' }] },
+  { name: 'Marcus T.', first: 'Marcus', major: 'Kinesiology · 1st year', past: 'baabbaabbabaababbaba', today: 'bba',
+    contacts: [{ label: 'School email', value: 'marcus.t@school.edu' }, { label: 'Instagram', value: '@marcus.lifts' }] },
+  { name: 'Elena V.', first: 'Elena', major: 'Architecture · 4th year', past: flip(MY_PAST, [2, 6, 11, 16]), today: 'aab',
+    contacts: [{ label: 'School email', value: 'elena.v@school.edu' }, { label: 'Instagram', value: '@elena.draws' }] }
+];
+
+const CONTACT_OPTS = [
+  { id: 'email', label: 'School email', field: 'EMAIL', placeholder: 'you@school.edu' },
+  { id: 'insta', label: 'Instagram', field: 'HANDLE', placeholder: '@yourname' },
+  { id: 'snap', label: 'Snapchat', field: 'USERNAME', placeholder: 'yourname' },
+  { id: 'phone', label: 'Text me', field: 'PHONE NUMBER', placeholder: '(555) 555-5555' }
+];
+
+/* ---------------- Matching algorithm ----------------
+   Weighted agreement: agreeing on a rare answer counts more
+   than agreeing on a popular one. Needs 10+ shared questions. */
+function matchScore(mine, theirs, pa) {
+  let score = 0, max = 0, shared = 0, agreed = 0, hot = 0;
+  for (let i = 0; i < mine.length; i++) {
+    if (!mine[i] || !theirs[i]) continue;
+    shared++;
+    const pctPicked = (mine[i] === 'a' ? pa[i] : 100 - pa[i]) / 100;
+    const weight = 1 - pctPicked + 0.5;
+    max += weight;
+    if (mine[i] === theirs[i]) {
+      score += weight; agreed++;
+      if (pctPicked < 0.35) hot++;
+    }
+  }
+  if (shared < 10) return null;
+  return { pct: Math.round((score / max) * 100), shared, agreed, hot };
+}
+
+function bestMatch(answers) {
+  const pa = PAST_PA.concat(QUESTIONS.map(q => q.pa));
+  const mine = MY_PAST.split('').concat(QUESTIONS.map((_, i) => answers[i] || ''));
+  let best = null;
+  for (const p of PEOPLE) {
+    const r = matchScore(mine, (p.past + p.today).split(''), pa);
+    if (r && (!best || r.pct > best.pct)) best = { ...p, ...r };
+  }
+  return best;
+}
+
+/* ---------------- State ---------------- */
+const initialState = () => ({
+  step: 0,            // 0 = landing, 1..N = questions, N+1 = after
+  answers: [],
+  view: 'results',    // results | share | optin | waiting | match | contact | connected | passed
+  anim: '',
+  copied: false,
+  copiedContact: null,
+  picks: { email: true },
+  contactValues: { email: 'you@school.edu' }
+});
+let state = initialState();
+
+function setState(patch) {
+  state = { ...state, ...patch };
+  render();
+}
+
+/* ---------------- Helpers ---------------- */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const N = QUESTIONS.length;
+const now = () => new Date();
+const shortDate = () => now().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+const longDate = () => now().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+
+function countdown() {
+  const n = now();
+  const next = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1);
+  let s = Math.max(0, Math.floor((next - n) / 1000));
+  const h = Math.floor(s / 3600); s -= h * 3600;
+  const m = Math.floor(s / 60); s -= m * 60;
+  const pad = x => String(x).padStart(2, '0');
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
+const withMajority = () => QUESTIONS.map((q, i) => state.answers[i] === (q.pa >= 50 ? 'a' : 'b'));
+const divisive = () => QUESTIONS.slice().sort((x, y) => Math.abs(x.pa - 50) - Math.abs(y.pa - 50))[0].text;
+
+const ICON_CLOSE = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#121212" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const ICON_BACK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#121212" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+const ICON_FLAME = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#121212" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-6 1-9.5z"/></svg>';
+
+/* ---------------- Screens ---------------- */
+function landing() {
+  return `
+  <section class="screen between">
+    <div class="row">
+      <div class="brand">KINNECT</div>
+      <div class="badge">${ICON_FLAME}<span>${STREAK}-day streak</span></div>
+    </div>
+    <div class="stack-8" style="gap:16px">
+      <div class="muted" style="font-size:15px">${longDate()}</div>
+      <h1 class="hero"><span class="hl">${N} questions.</span></h1>
+      <p style="margin:0;font-size:20px;line-height:1.35">Answer anonymously, then see where your campus stands.</p>
+    </div>
+    <button class="btn btn-primary" style="height:64px;font-size:18px" data-action="start">Start</button>
+  </section>`;
+}
+
+function question() {
+  const i = Math.min(state.step - 1, N - 1);
+  const q = QUESTIONS[i];
+  const a = state.anim;
+  const aCls = a === 'a' ? 'pop' : a === 'b' ? 'fade' : '';
+  const bCls = a === 'b' ? 'pop' : a === 'a' ? 'fade' : '';
+  const segs = QUESTIONS.map((_, k) => `<div class="seg ${k < state.step ? 'done' : ''}"></div>`).join('');
+  return `
+  <section class="screen ${a ? 'shake' : ''}" style="gap:20px">
+    <div class="row label"><span>KINNECT</span><span>${Math.min(state.step, N)} / ${N}</span></div>
+    <div class="segs">${segs}</div>
+    <div class="pill">${esc(q.tag)}</div>
+    <h2 class="question">${esc(q.text)}</h2>
+    <div class="stack-8" style="gap:12px">
+      <button class="btn answer answer-a ${aCls}" data-action="pick" data-choice="a">${esc(q.a)}</button>
+      <button class="btn answer answer-b ${bCls}" data-action="pick" data-choice="b">${esc(q.b)}</button>
+    </div>
+  </section>`;
+}
+
+function results() {
+  const rows = QUESTIONS.map((q, i) => {
+    const mine = state.answers[i];
+    return `
+    <div class="result">
+      <div class="pill pill-sm">${esc(q.tag)}</div>
+      <div class="result-q">${esc(q.text)}</div>
+      <div class="bar">
+        <div class="a" style="flex:${q.pa} 1 0">${q.pa}%</div>
+        <div class="b" style="flex:${100 - q.pa} 1 0">${100 - q.pa}%</div>
+      </div>
+      <div class="bar-labels"><span>${esc(q.a)}${mine === 'a' ? '  ← you' : ''}</span><span>${mine === 'b' ? 'you →  ' : ''}${esc(q.b)}</span></div>
+    </div>`;
+  }).join('');
+  return `
+  <section class="screen" style="gap:16px">
+    <div class="row"><div class="label">TODAY'S RESULTS</div><div style="font-size:14px;font-weight:700">${STREAK + 1}-day streak</div></div>
+    <div class="scroll">
+      ${rows}
+      <div class="card">
+        <div class="card-tag" style="background:var(--lavender)">MOST DIVISIVE TODAY</div>
+        <div style="font-size:16px;font-weight:600;line-height:1.3">${esc(divisive())}</div>
+        <div style="font-size:14px;line-height:1.35">Campus is split almost 50/50. Ask a friend which side they're on.</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+      <div class="label muted">NEW QUESTIONS IN</div>
+      <div class="countdown display" id="countdown">${countdown()}</div>
+    </div>
+    <div class="stack-8">
+      <button class="btn btn-primary" data-action="view" data-view="optin">Find my match →</button>
+      <div class="btn-row">
+        <button class="btn btn-secondary" data-action="view" data-view="share">Share</button>
+        <button class="btn btn-secondary" data-action="restart">Replay demo</button>
+      </div>
+    </div>
+  </section>`;
+}
+
+function share() {
+  const wm = withMajority();
+  const matched = wm.filter(Boolean).length;
+  return `
+  <section class="screen" style="gap:24px">
+    <div class="row"><div class="label">SHARE</div><button class="icon-btn" aria-label="Close" data-action="view" data-view="results">${ICON_CLOSE}</button></div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center">
+      <div class="share-card">
+        <div class="row label" style="font-weight:700"><span>KINNECT</span><span>${shortDate()}</span></div>
+        <div class="squares">${wm.map(w => `<div class="square ${w ? 'with' : ''}"></div>`).join('')}</div>
+        <div class="stack-8" style="gap:4px">
+          <div class="display" style="font-size:32px;font-weight:800;letter-spacing:-0.02em">${matched}/${N} with the crowd</div>
+          <div style="font-size:15px">${STREAK + 1}-day streak</div>
+        </div>
+        <div style="font-size:12px">■ = sided with the majority &nbsp; □ = went against it</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" data-action="copyShare">${state.copied ? 'Copied!' : 'Copy to share'}</button>
+  </section>`;
+}
+
+function optin() {
+  return `
+  <section class="screen" style="gap:28px">
+    <div class="row"><div class="label">FIND YOUR PEOPLE</div><button class="icon-btn" aria-label="Close" data-action="view" data-view="results">${ICON_CLOSE}</button></div>
+    <h2 style="margin:0;font-size:38px;line-height:1.08;font-weight:800;letter-spacing:-0.02em">Meet someone who answers like you.</h2>
+    <div class="stack-8" style="gap:18px">
+      <div class="step"><div class="step-num">1</div><div class="step-text">We compare your answers with other students who opted in. Agreeing on rare answers counts most.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Every Sunday you get one match, or sooner if you're over 90%.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Nobody sees who you are until you both accept. Your individual answers are never shown.</div></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="muted" style="font-size:13px;line-height:1.4;text-align:center">Requires your school .edu email. Opt out anytime and your saved answers are deleted.</div>
+    <div class="stack-8">
+      <button class="btn btn-primary" data-action="view" data-view="waiting">Opt in</button>
+      <button class="btn btn-secondary" data-action="view" data-view="results">Not now</button>
+    </div>
+  </section>`;
+}
+
+function waiting() {
+  return `
+  <section class="screen between">
+    <div class="label">YOU'RE IN</div>
+    <div class="stack-8" style="gap:14px">
+      <h2 style="margin:0;font-size:40px;line-height:1.05;font-weight:800;letter-spacing:-0.02em">Your first match arrives Sunday.</h2>
+      <p style="margin:0;font-size:18px;line-height:1.4">Keep answering every day. The more you answer, the better your match.</p>
+    </div>
+    <div class="stack-8">
+      <button class="btn btn-primary" data-action="view" data-view="match">Demo: skip to Sunday</button>
+      <button class="btn btn-secondary" data-action="restart">Done</button>
+    </div>
+  </section>`;
+}
+
+function match() {
+  const m = bestMatch(state.answers);
+  return `
+  <section class="screen" style="gap:24px">
+    <div class="label">YOUR WEEKLY MATCH</div>
+    <div class="stack-8" style="gap:4px">
+      <div class="big-pct display">${m.pct}%</div>
+      <div style="font-size:18px;font-weight:600;margin-top:8px">answer match</div>
+    </div>
+    <div style="border-top:2px solid var(--ink);padding-top:20px;display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:28px;font-weight:800">${esc(m.name)}</div>
+      <div style="font-size:16px">${esc(m.major)}</div>
+    </div>
+    <div class="stack-8" style="gap:12px">
+      <div class="stat"><span>Answered the same</span><span style="font-weight:800">${m.agreed} of ${m.shared}</span></div>
+      <div class="stat"><span>Shared hot takes</span><span style="font-weight:800">${m.hot}</span></div>
+      <div class="muted" style="font-size:13px;line-height:1.4">Hot takes are answers fewer than 35% of campus picked. Neither of you will see the other's individual answers.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" style="height:56px;font-size:17px" data-action="view" data-view="passed">Pass</button>
+      <button class="btn btn-primary" style="flex:2" data-action="view" data-view="contact">Accept</button>
+    </div>
+  </section>`;
+}
+
+function contact() {
+  const m = bestMatch(state.answers);
+  const any = CONTACT_OPTS.some(o => state.picks[o.id]);
+  const opts = CONTACT_OPTS.map(o => {
+    const on = !!state.picks[o.id];
+    return `
+    <div class="opt ${on ? 'on' : ''}">
+      <button class="opt-toggle" data-action="toggleContact" data-id="${o.id}" aria-pressed="${on}"><span>${o.label}</span><span>${on ? '✓' : '+'}</span></button>
+      ${on ? `<label><span>${o.field}</span><input type="text" data-contact="${o.id}" value="${esc(state.contactValues[o.id] || '')}" placeholder="${o.placeholder}"></label>` : ''}
+    </div>`;
+  }).join('');
+  return `
+  <section class="screen" style="gap:20px">
+    <div class="row"><div class="label">HOW TO CONNECT</div><button class="icon-btn" aria-label="Back" data-action="view" data-view="match">${ICON_BACK}</button></div>
+    <h2 style="margin:0;font-size:32px;line-height:1.1;font-weight:800;letter-spacing:-0.02em">How can ${esc(m.first)} reach you?</h2>
+    <div style="font-size:15px;line-height:1.4">Pick one or more. ${esc(m.first)} only sees these if you both accept.</div>
+    <div class="stack-8" style="gap:10px">${opts}</div>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" data-action="view" data-view="connected" ${any ? '' : 'disabled'}>Share and accept</button>
+  </section>`;
+}
+
+function connected() {
+  const m = bestMatch(state.answers);
+  const mine = CONTACT_OPTS.filter(o => state.picks[o.id]).map(o => o.label).join(', ');
+  const theirs = m.contacts.map((c, i) => `
+    <div class="contact-row">
+      <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span class="muted" style="font-size:12px">${esc(c.label)}</span><span style="font-size:17px;font-weight:700">${esc(c.value)}</span></div>
+      <button class="btn btn-secondary" style="min-width:76px" data-action="copyContact" data-index="${i}">${state.copiedContact === i ? 'Copied' : 'Copy'}</button>
+    </div>`).join('');
+  return `
+  <section class="screen between">
+    <div class="label">IT'S MUTUAL</div>
+    <div class="stack-8" style="gap:16px">
+      <h2 style="margin:0;font-size:36px;line-height:1.05;font-weight:800;letter-spacing:-0.03em">You and ${esc(m.first)} both said yes.</h2>
+      <div class="stack-8">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.12em">${esc(m.first.toUpperCase())} SHARED</div>
+        ${theirs}
+        <div class="muted" style="font-size:13px">You shared: ${esc(mine)}</div>
+      </div>
+      <div class="card">
+        <div class="card-tag" style="background:var(--peach)">ICEBREAKER</div>
+        <div style="font-size:16px;line-height:1.35">Ask ${esc(m.first)}: "${esc(divisive())}"</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary">Block / report</button>
+      <button class="btn btn-secondary" data-action="restart">Replay demo</button>
+    </div>
+  </section>`;
+}
+
+function passed() {
+  const m = bestMatch(state.answers);
+  return `
+  <section class="screen between">
+    <div class="label">NO WORRIES</div>
+    <h2 style="margin:0;font-size:40px;line-height:1.05;font-weight:800;letter-spacing:-0.02em">${esc(m.first)} won't know. New match next Sunday.</h2>
+    <button class="btn btn-primary" data-action="restart">Back to start</button>
+  </section>`;
+}
+
+const VIEWS = { results, share, optin, waiting, match, contact, connected, passed };
+
+function render() {
+  const app = document.getElementById('app');
+  let html;
+  if (state.step === 0) html = landing();
+  else if (state.step <= N) html = question();
+  else html = (VIEWS[state.view] || results)();
+  app.innerHTML = html;
+}
+
+/* ---------------- Events ---------------- */
+function copy(text) {
+  try { navigator.clipboard && navigator.clipboard.writeText(text); } catch (e) {}
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const { action } = el.dataset;
+
+  if (action === 'start') setState({ ...initialState(), step: 1 });
+  if (action === 'restart') setState(initialState());
+  if (action === 'view') setState({ view: el.dataset.view, copied: false });
+
+  if (action === 'pick') {
+    if (state.anim) return;               // ignore double taps
+    const choice = el.dataset.choice;
+    setState({ anim: choice });
+    setTimeout(() => {
+      setState({ anim: '', step: state.step + 1, answers: state.answers.concat([choice]) });
+    }, 650);
+  }
+
+  if (action === 'copyShare') {
+    const wm = withMajority();
+    const text = `Kinnect · ${shortDate()}\n${wm.map(w => (w ? '⬛' : '⬜')).join('')}\n${wm.filter(Boolean).length}/${N} with the crowd · ${STREAK + 1}-day streak`;
+    copy(text);
+    setState({ copied: true });
+  }
+
+  if (action === 'toggleContact') {
+    const id = el.dataset.id;
+    setState({ picks: { ...state.picks, [id]: !state.picks[id] } });
+  }
+
+  if (action === 'copyContact') {
+    const i = Number(el.dataset.index);
+    copy(bestMatch(state.answers).contacts[i].value);
+    setState({ copiedContact: i });
+  }
+});
+
+document.addEventListener('input', e => {
+  const id = e.target.dataset && e.target.dataset.contact;
+  if (id) state.contactValues[id] = e.target.value;   // no re-render, keeps focus
+});
+
+// Live countdown on the results screen
+setInterval(() => {
+  const el = document.getElementById('countdown');
+  if (el) el.textContent = countdown();
+}, 1000);
+
+render();
+</script>
+</body>
+</html>
