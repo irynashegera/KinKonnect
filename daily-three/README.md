@@ -31,3 +31,7 @@ Email delivery and signed-in data paths need real account testing. No end-to-end
 The app now supports entering an emailed OTP code in addition to existing magic links. To avoid Microsoft Safe Links / email prefetch consuming a one-time link, set both Authentication → Emails → Templates → **Confirm sign up** and **Magic link or OTP** bodies to `supabase/email-templates/sign-in.html`. Set the subject to `Your Kinnect sign-in code`. Keep `{{ .Token }}` exact, and omit `{{ .ConfirmationURL }}` so the email has no consumable auth link. This is a Supabase dashboard configuration, not something GitHub deployment applies automatically.
 
 New and returning users both verify using `verifyOtp({ email, token, type: 'email' })`. Existing authenticated sessions remain valid. Codes are never stored in app storage or sent anywhere except Supabase Auth. Pending email and resend cooldown are kept in sessionStorage; no code is persisted. End-to-end delivery with the new template still requires testing with real Cal Poly inboxes.
+
+## Question replay
+
+Signed-in users can open **Preview questions** from their profile or completed daily results. This runs the current question set using separate in-memory answers; it never inserts or changes database answers, percentages, or matches. Preview completion shows a practice recap and **Run again**. Exiting returns to the real daily state. No fake history or student profiles are created.
