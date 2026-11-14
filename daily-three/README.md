@@ -1,4 +1,4 @@
-# Daily Three — Cal Poly
+# Kinnect — Cal Poly
 
 Responsive black-and-white website connected to Supabase project `ykuwpfxzqqjuzihuoptb`.
 
