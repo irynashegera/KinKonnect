@@ -3,7 +3,7 @@ begin;
 -- Real aggregate results. Individual answers stay private.
 create or replace function public.campus_results(target_date date)
 returns table(question_id uuid, question_text text, option_a text, option_b text,
-  position smallint, votes_a bigint, votes_b bigint, my_choice smallint)
+  "position" smallint, votes_a bigint, votes_b bigint, my_choice smallint)
 language plpgsql stable security definer set search_path = '' as $$
 begin
   if not public.is_calpoly_student() then
