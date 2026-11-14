@@ -25,3 +25,9 @@ The website uses the official Supabase JS 2.119.0 UMD bundle in `dist/vendor/`. 
 ## Testing boundaries
 
 Email delivery and signed-in data paths need real account testing. No end-to-end email verification is claimed until a student has completed the real link flow. The Sites deployment is owner-private until access is explicitly changed; sharing with teammates requires a hosting access change or another public deployment.
+
+## Reliable email verification
+
+The app now supports entering an emailed OTP code in addition to existing magic links. To avoid Microsoft Safe Links / email prefetch consuming a one-time link, set both Authentication → Emails → Templates → **Confirm sign up** and **Magic link or OTP** bodies to `supabase/email-templates/sign-in.html`. Set the subject to `Your Kinnect sign-in code`. Keep `{{ .Token }}` exact, and omit `{{ .ConfirmationURL }}` so the email has no consumable auth link. This is a Supabase dashboard configuration, not something GitHub deployment applies automatically.
+
+New and returning users both verify using `verifyOtp({ email, token, type: 'email' })`. Existing authenticated sessions remain valid. Codes are never stored in app storage or sent anywhere except Supabase Auth. Pending email and resend cooldown are kept in sessionStorage; no code is persisted. End-to-end delivery with the new template still requires testing with real Cal Poly inboxes.
