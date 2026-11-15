@@ -47,3 +47,7 @@ The welcome screen now uses a full-screen green-and-gold SVG landscape with a su
 ## Scrollable introduction
 
 The welcome screen now scrolls from the landscape hero into a concise campus-specific thesis, how-it-works section, and final call to action. All start buttons use the same verified-account onboarding/daily flow. Hero copy is “Three questions. One campus.” and “Answer every day. See how Cal Poly thinks.” Wordmark tracking is normal, the replay interaction/hint is removed, and the welcome layout uses restrained typography and pill buttons. No database schema changes are required.
+
+## Minimal light homepage
+
+The current homepage follows the supplied clean reference: off-white background, centered spaced wordmark, two-line headline, gray supporting copy, and black pill CTA. The scroll-down introduction remains. The Kinnect wordmark in the app header and homepage/footer opens the homepage. Signed-out visitors can view home and then continue to email verification; signed-in students continue to profile setup or their real daily state. Question screens retain their existing green-and-gold styling.
