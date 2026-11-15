@@ -35,3 +35,7 @@ New and returning users both verify using `verifyOtp({ email, token, type: 'emai
 ## Question replay
 
 Signed-in users can open **Preview questions** from their profile or completed daily results. This runs the current question set using separate in-memory answers; it never inserts or changes database answers, percentages, or matches. Preview completion shows a practice recap and **Run again**. Exiting returns to the real daily state. No fake history or student profiles are created.
+
+## Welcome screen and Cal Poly-inspired theme
+
+After verified sign-in, a brief welcome screen explains the daily questions, campus results, and matches before profile setup or daily play. It appears once per browser session/account and can be reopened via Profile → About Kinnect. This preference is local UI state, not a new database column. The palette uses Poly Green (#154734), gold (#BD8B13 / #F2C75C), black, and white; it does not imply university affiliation.
