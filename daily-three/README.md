@@ -51,3 +51,7 @@ The welcome screen now scrolls from the landscape hero into a concise campus-spe
 ## Minimal light homepage
 
 The current homepage follows the supplied clean reference: off-white background, centered spaced wordmark, two-line headline, gray supporting copy, and black pill CTA. The scroll-down introduction remains. The Kinnect wordmark in the app header and homepage/footer opens the homepage. Signed-out visitors can view home and then continue to email verification; signed-in students continue to profile setup or their real daily state. Question screens retain their existing green-and-gold styling.
+
+## Mission and shared campus palette
+
+Homepage About content is now a short explanation of why Kinnect is being built. A bottom-left Our mission button opens a native, keyboard-accessible dialog; Close, Escape, and clicking the backdrop dismiss it. Homepage and result accents use the same green/gold palette as questions. Question-page styles and all database behavior remain unchanged.
