@@ -69,3 +69,7 @@ Sign in to Kinnect, open **Profile → Question admin**. Access is checked in th
 - Apply `supabase/03-question-admin.sql`, then `04-team-editors.sql` once. These were applied to the current project during setup. Do not put secrets in SQL or browser files.
 
 Build: `node scripts/build-worker.mjs`. Produces a Cloudflare Worker with the existing static assets bundled, plus protected `/api/admin/status` and `/api/admin/generate` endpoints. Test: `node tests/admin-worker.mjs`.
+
+### Live campus results (admins only)
+
+Question admin shows today’s real aggregate percentages and counts. It refreshes every 30 seconds while the panel is visible, with manual refresh available. Results polling updates only its panel, preserving question editor drafts. `supabase/05-admin-live-results.sql` adds the guarded, aggregate-only RPC; the normal student results function still rejects current-day requests. No votes are modified by viewing results.
