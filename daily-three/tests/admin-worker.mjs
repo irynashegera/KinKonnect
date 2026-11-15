@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+const source=await readFile(new URL('../worker/index.js',import.meta.url),'utf8');
+const {handleApi,validateDraft}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const original=globalThis.fetch;let calls=[];
+globalThis.fetch=async(url,opts)=>{calls.push(url);if(url.endsWith('/auth/v1/user'))return Response.json({id:'test-admin'});if(url.endsWith('/is_kinnect_admin'))return Response.json(false);throw Error('Unexpected external request');};
+let res=await handleApi(new Request('https://kinnect.test/api/admin/generate',{method:'POST',headers:{Origin:'https://kinnect.test'},body:'{}'}),{OPENAI_API_KEY:'test'});assert.equal(res.status,401);assert.equal(calls.length,0);
+res=await handleApi(new Request('https://kinnect.test/api/admin/generate',{method:'POST',headers:{Origin:'https://other.test',Authorization:'Bearer test'},body:'{}'}),{OPENAI_API_KEY:'test'});assert.equal(res.status,403);assert.equal(calls.length,0);
+res=await handleApi(new Request('https://kinnect.test/api/admin/generate',{method:'POST',headers:{Origin:'https://kinnect.test',Authorization:'Bearer test'},body:'{"brief":"hello"}'}),{OPENAI_API_KEY:'test'});assert.equal(res.status,403);assert(!calls.some(u=>u.includes('openai.com')));
+const good=Array.from({length:30},(_,i)=>({category:['campus','life','debate'][i%3],question_text:`A unique student dilemma number ${i}?`,option_a:'First choice',option_b:'Second choice'}));assert.equal(validateDraft({questions:good}).length,30);assert.throws(()=>validateDraft({questions:good.slice(1)}));assert.throws(()=>validateDraft({questions:good.map((q,i)=>i===1?good[0]:q)}));assert.throws(()=>validateDraft({questions:good.map((q,i)=>i===1?{...q,option_b:q.option_a}:q)}));
+globalThis.fetch=original;
+console.log('Admin server checks passed: unauthorized and cross-origin generation blocked before AI calls; incomplete, duplicate and invalid drafts rejected.');

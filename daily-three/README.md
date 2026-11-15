@@ -55,3 +55,17 @@ The current homepage follows the supplied clean reference: off-white background,
 ## Mission and shared campus palette
 
 Homepage About content is now a short explanation of why Kinnect is being built. A bottom-left Our mission button opens a native, keyboard-accessible dialog; Close, Escape, and clicking the backdrop dismiss it. Homepage and result accents use the same green/gold palette as questions. Question-page styles and all database behavior remain unchanged.
+
+## Question editor
+
+Sign in to Kinnect, open **Profile → Question admin**. Access is checked in the database and on the generation endpoint. The owner can add verified existing students as question editors. Editors cannot manage team access.
+
+- Review seven days, three questions per day, then **Approve & schedule week**.
+- AI generation drafts 21 scheduled questions plus nine optional backups. It never publishes automatically. Requires server-only `OPENAI_API_KEY` and API quota.
+- Free alternative: **Import questions from ChatGPT**. Copy the prompt, paste the resulting 21- or 30-item JSON array, review, and approve.
+- **Review starter backups** offers 30 manually authored drafts. Select and approve extras to stock the bank. The bank must be replenished; the badge shows days remaining.
+- Pacific dates control publication. On the first verified student visit to an unscheduled day, `ensure_daily_mix` atomically takes three unused approved backups. Concurrent visitors receive the same set. It never edits an existing set, and does not recycle used questions. Fewer than three backups leaves the day unscheduled; no invented votes or fake answers.
+- Only future dates can be edited. Existing question IDs and student answers are preserved. Database transaction validation rejects incomplete and repeated questions.
+- Apply `supabase/03-question-admin.sql`, then `04-team-editors.sql` once. These were applied to the current project during setup. Do not put secrets in SQL or browser files.
+
+Build: `node scripts/build-worker.mjs`. Produces a Cloudflare Worker with the existing static assets bundled, plus protected `/api/admin/status` and `/api/admin/generate` endpoints. Test: `node tests/admin-worker.mjs`.
