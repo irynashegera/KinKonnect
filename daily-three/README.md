@@ -39,3 +39,7 @@ Signed-in users can open **Preview questions** from their profile or completed d
 ## Welcome screen and Cal Poly-inspired theme
 
 After verified sign-in, a brief welcome screen explains the daily questions, campus results, and matches before profile setup or daily play. It appears once per browser session/account and can be reopened via Profile → About Kinnect. This preference is local UI state, not a new database column. The palette uses Poly Green (#154734), gold (#BD8B13 / #F2C75C), black, and white; it does not imply university affiliation.
+
+## Landscape welcome
+
+The welcome screen now uses a full-screen green-and-gold SVG landscape with a sunrise, subtle stars, and animated connecting paths. It retains the short “3 questions a day” description and uses the broader “See what you have in common” copy. Tap the background to replay the animation. Motion settles in under five seconds and respects reduced-motion preferences. This design is scoped to the welcome screen; question screens and database behavior are unchanged.
