@@ -42,4 +42,8 @@ After verified sign-in, a brief welcome screen explains the daily questions, cam
 
 ## Landscape welcome
 
-The welcome screen now uses a full-screen green-and-gold SVG landscape with a sunrise, subtle stars, and animated connecting paths. It retains the short “3 questions a day” description and uses the broader “See what you have in common” copy. Tap the background to replay the animation. Motion settles in under five seconds and respects reduced-motion preferences. This design is scoped to the welcome screen; question screens and database behavior are unchanged.
+The welcome screen now uses a full-screen green-and-gold SVG landscape with a sunrise, subtle stars, and animated connecting paths. It retains the short “3 questions a day” description and uses the broader “See what you have in common” copy. The background animation plays automatically. Motion settles in under five seconds and respects reduced-motion preferences. This design is scoped to the welcome screen; question screens and database behavior are unchanged.
+
+## Scrollable introduction
+
+The welcome screen now scrolls from the landscape hero into a concise campus-specific thesis, how-it-works section, and final call to action. All start buttons use the same verified-account onboarding/daily flow. Hero copy is “Three questions. One campus.” and “Answer every day. See how Cal Poly thinks.” Wordmark tracking is normal, the replay interaction/hint is removed, and the welcome layout uses restrained typography and pill buttons. No database schema changes are required.
